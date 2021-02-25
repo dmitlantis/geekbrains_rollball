@@ -12,13 +12,27 @@ namespace Geekbrains
         private void Awake()
         {
             _interactiveObjects = FindObjectsOfType<InteractiveObject>().ToList();
-            var displayBonuses = new DisplayBonuses();
+            
             foreach (var interactiveObject in _interactiveObjects)
             {
-                interactiveObject.Initialization(displayBonuses);
+                
+                interactiveObject.OnDestroyChange += InteractiveObjectOnOnDestroyAudio;
                 interactiveObject.OnDestroyChange += InteractiveObjectOnOnDestroyChange;
             }
         }
+
+        private void InteractiveObjectOnOnDestroyAudio(InteractiveObject value)
+        {
+            try
+            {
+                Camera.main.GetComponent<AudioSource>().Play();
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.Log("Camera not found!");
+            }
+        }
+        
 
         private void InteractiveObjectOnOnDestroyChange(InteractiveObject value)
         {
