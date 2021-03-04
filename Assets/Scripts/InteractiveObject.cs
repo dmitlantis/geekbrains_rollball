@@ -18,7 +18,12 @@ namespace Geekbrains
             }
             Interaction();
             OnDestroyChange?.Invoke(this);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+        }
+
+        public void OnReset()
+        {
+            gameObject.SetActive(true);
         }
 
         protected abstract void Interaction();

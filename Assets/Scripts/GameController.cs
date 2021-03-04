@@ -2,23 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Geekbrains
 {
     public sealed class GameController : MonoBehaviour, IDisposable
     {
         private List<InteractiveObject> _interactiveObjects;
+        private int _pickedObjects = 0;
+        private GameObject _winText;
+        public event Action OnReset;
 
         private void Awake()
         {
             _interactiveObjects = FindObjectsOfType<InteractiveObject>().ToList();
+            _winText = GameObject.Find("WinText");
             
             foreach (var interactiveObject in _interactiveObjects)
             {
                 
                 interactiveObject.OnDestroyChange += InteractiveObjectOnOnDestroyAudio;
                 interactiveObject.OnDestroyChange += InteractiveObjectOnOnDestroyChange;
+                OnReset += interactiveObject.OnReset;
+
             }
+
+            GameObject butt = GameObject.Find("Reset");
+            butt.GetComponent<Button>().onClick.AddListener(ResetLevel);
+
+            Player player = FindObjectOfType<Player>();
+            OnReset += player.OnReset;
         }
 
         private void InteractiveObjectOnOnDestroyAudio(InteractiveObject value)
@@ -32,12 +45,22 @@ namespace Geekbrains
                 Debug.Log("Camera not found!");
             }
         }
-        
 
         private void InteractiveObjectOnOnDestroyChange(InteractiveObject value)
         {
-            value.OnDestroyChange -= InteractiveObjectOnOnDestroyChange;
-            _interactiveObjects.Remove(value);
+            _pickedObjects++;
+            if (_pickedObjects == _interactiveObjects.Count)
+            {
+                _winText.SetActive(true);
+            }
+        }
+        
+
+        private void ResetLevel()
+        {
+            OnReset?.Invoke();
+            _pickedObjects = 0;
+            _winText.SetActive(false);
         }
 
         private void Update()

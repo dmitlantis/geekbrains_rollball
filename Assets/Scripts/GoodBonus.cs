@@ -18,7 +18,6 @@ namespace Geekbrains
         
         protected override void Interaction()
         {
-            _view.Display(Point);
             // Add bonus
         }
 

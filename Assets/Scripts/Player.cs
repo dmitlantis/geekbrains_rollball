@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Geekbrains
 {
@@ -6,6 +7,12 @@ namespace Geekbrains
     {
         public float Speed = 3.0f;
         private Rigidbody _rigidbody;
+        private Vector3 _startPosition;
+
+        private void Awake()
+        {
+            _startPosition = transform.position;
+        }
 
         private void Start()
         {
@@ -20,6 +27,13 @@ namespace Geekbrains
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
             
             _rigidbody.AddForce(movement * Speed);
+        }
+
+        public void OnReset()
+        {
+            transform.position = _startPosition;
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
         }
     }
 }
